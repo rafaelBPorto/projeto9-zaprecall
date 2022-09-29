@@ -1,11 +1,13 @@
 import Global from "../assets/css/Global"
-import Teste from "./Teste.js"
+import ScreenContainer from "./ScreenContainer"
+
 
 export default function App(){
     return(
         <div>
           <Global />
-          <Teste />
+          <ScreenContainer />
+          
         </div>
     )
 }
