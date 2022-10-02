@@ -1,8 +1,8 @@
-export default function Main({perguntas}){
-    console.log(perguntas)
+export default function Main(){
+
     return(
         <div>
-            {perguntas.questao}
+            MAIN
         </div>
     )
 }

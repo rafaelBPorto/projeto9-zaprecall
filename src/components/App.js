@@ -1,13 +1,12 @@
-import Global from "../assets/css/Global"
-import ScreenContainer from "./ScreenContainer"
+import Global from "../Global.js"
+import ZapReacall from "./ZapReacall"
 
 
 export default function App(){
     return(
         <div>
           <Global />
-          <ScreenContainer />
-          
+          <ZapReacall /> 
         </div>
     )
 }
