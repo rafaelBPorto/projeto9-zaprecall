@@ -2,14 +2,17 @@ import styled from "styled-components";
 import DeckCards from "./DeckCards";
 import Footer from "./Footer";
 import Hearder from "./Header";
+import { useState } from "react";
 
-export default function ZapRecall({perguntas, cores}) {
+
+export default function ZapRecall({ perguntas, cores }) {
+
 
     return (
         <ScreenContainer>
             <Hearder />
             <DeckCards perguntas={perguntas}/>
-            <Footer cores={cores}/>
+            <Footer cores={cores} />
         </ScreenContainer>
     )
 }

@@ -1,30 +1,62 @@
 import styled from "styled-components";
 import setinha from "../assets/img/setinha.png"
+import { useState } from "react";
 
-export default function (props){
-    return(
+
+export default function ({ perguntas }) {
+
+
+    const [posicaoCard, setPosicaoCard] = useState(perguntas.posicaoCard)
+
+    function mudarExibicao(posicaoAtual) {
+        let novaPosicao = ""
+        switch (posicaoAtual) {
+            case "fechado":
+                novaPosicao = "textoPergunta"
+                break;
+            case "textoPergunta":
+                novaPosicao = "respostaPergunta"
+                break;
+            case "respostaPergunta":
+                novaPosicao = "respondido"
+                break;
+        }
+        perguntas.posicaoCard = novaPosicao
+        setPosicaoCard(novaPosicao)
+    }
+
+    return (
         <>
-            <PerguntaFechada>
-                <p>Pergunta {props.perguntas.id}</p>
-                <ion-icon name="play-outline"></ion-icon>
+            {perguntas.posicaoCard === "fechado" && (
+                <PerguntaFechada onClick={() => mudarExibicao(perguntas.posicaoCard)}>
+                    <p>Pergunta {perguntas.id}</p>
+                    <ion-icon name="play-outline"></ion-icon>
 
-            </PerguntaFechada>
-            <PerguntaAberta>
-                <div>
-                    {props.perguntas.pergunta}
-                    <img src={setinha} />
-                </div>
+                </PerguntaFechada>
+            )}
 
-                <div>
-                    {props.perguntas.resposta}
-                </div>
-            </PerguntaAberta>
+            {perguntas.posicaoCard === "textoPergunta" && (
+                <PerguntaAberta onClick={() => mudarExibicao(perguntas.posicaoCard)}>
+                    <div>
+                        {perguntas.pergunta}
+                        <img src={setinha} />
+                    </div>
+                </PerguntaAberta>
+            )}
+            {perguntas.posicaoCard === "respostaPergunta" && (
+                <PerguntaAberta onClick={() => mudarExibicao(perguntas.posicaoCard)}>
+                    <div>
+                        {perguntas.resposta}
+                    </div>
+                </PerguntaAberta>
+            )}
+
         </>
     )
 }
 
 
-const PerguntaFechada = styled.div `
+const PerguntaFechada = styled.div`
     width: 300px;
     height: 35px;
     background-color: #FFFFFF;
@@ -45,8 +77,8 @@ const PerguntaFechada = styled.div `
         color: #333333;
       }
 `
-  
-  
+
+
 const PerguntaAberta = styled.div`
     width: 300px;
     margin: 12px;
