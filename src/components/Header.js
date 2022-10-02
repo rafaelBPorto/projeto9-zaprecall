@@ -1,22 +1,22 @@
 import styled from "styled-components";
 import logo from "../assets/img/logo.png"
 
-export default function Header() {
+export default function Hearder() {
     return (
         <LogoContainer>
-            <img src={logo} />
+            <img src={logo} alt ="raio" />
             <h1>ZapRecall</h1>
         </LogoContainer>
     )
 }
 
-const LogoContainer = styled.div`
+const LogoContainer = styled.div` 
     display: flex;
     align-items: center;
     margin: 40px 0 20px 0;
 
     img {
-        width: 52px;
+         width: 52px;
     }
 
     h1 {
@@ -28,4 +28,5 @@ const LogoContainer = styled.div`
         color: #FFFFFF;
         margin-left: 20px;
     }
+
 `
