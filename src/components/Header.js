@@ -11,6 +11,8 @@ export default function Hearder() {
 }
 
 const LogoContainer = styled.div` 
+    
+
     display: flex;
     align-items: center;
     margin: 40px 0 20px 0;
@@ -20,7 +22,7 @@ const LogoContainer = styled.div`
     }
 
     h1 {
-        font-family: 'Righteous';
+        font-family: 'Righteous', cursive;
         font-style: normal;
         font-weight: 400;
         font-size: 36px;

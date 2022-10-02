@@ -3,40 +3,46 @@ import setinha from "../assets/img/setinha.png"
 import { useState } from "react";
 
 
-export default function ({ perguntas }) {
+export default function ({ perguntas, estadoCarta, bloquearCartas, liberarCartas}) {
 
 
     const [posicaoCard, setPosicaoCard] = useState(perguntas.posicaoCard)
 
     function mudarExibicao(posicaoAtual) {
         let novaPosicao = ""
+        let novoEstado
         switch (posicaoAtual) {
             case "fechado":
                 novaPosicao = "textoPergunta"
+                bloquearCartas()
                 break;
             case "textoPergunta":
                 novaPosicao = "respostaPergunta"
+                
                 break;
             case "respostaPergunta":
                 novaPosicao = "respondido"
+                liberarCartas()
                 break;
         }
         perguntas.posicaoCard = novaPosicao
+        estadoCarta = novoEstado
         setPosicaoCard(novaPosicao)
     }
 
     return (
         <>
             {perguntas.posicaoCard === "fechado" && (
-                <PerguntaFechada onClick={() => mudarExibicao(perguntas.posicaoCard)}>
+                <PerguntaFechada cor={"#333333"} onClick={() => {estadoCarta && (mudarExibicao(perguntas.posicaoCard))}}>
                     <p>Pergunta {perguntas.id}</p>
                     <ion-icon name="play-outline"></ion-icon>
 
                 </PerguntaFechada>
             )}
 
+            
             {perguntas.posicaoCard === "textoPergunta" && (
-                <PerguntaAberta onClick={() => mudarExibicao(perguntas.posicaoCard)}>
+                <PerguntaAberta  onClick={() => mudarExibicao(perguntas.posicaoCard)}>
                     <div>
                         {perguntas.pergunta}
                         <img src={setinha} />
@@ -49,6 +55,14 @@ export default function ({ perguntas }) {
                         {perguntas.resposta}
                     </div>
                 </PerguntaAberta>
+            )}
+            {perguntas.posicaoCard === "respondido" && (
+                <PerguntaFechada cor={"red"}>
+                    <p>Pergunta {perguntas.id}</p>
+                    <ion-icon name="close-circle"></ion-icon>
+                   
+
+                </PerguntaFechada>
             )}
 
         </>
@@ -74,8 +88,17 @@ const PerguntaFechada = styled.div`
         font-weight: 700;
         font-size: 16px;
         line-height: 19px;
-        color: #333333;
+        color: ${props=>props.cor};
       }
+
+    ion-icon{
+        color: red;
+    }
+
+    img{
+        width: 30px;
+        color: red;
+    }
 `
 
 
