@@ -7,42 +7,26 @@ import Hearder from "./Header";
 
 export default function ZapRecall({ perguntas, cores }) {
 
-    const [estadoResultado, setEstadoResultado] = useState("")
-    const [liberarResposta, setLiberarResposta] = useState(false)
-    let novoResultado = ""
+    const [respondidos, setRespondidos] = useState(0)
 
-    function botaoClicado(opcao) {
-        novoResultado = opcao
-        setEstadoResultado(novoResultado)
-    } 
-
-    function resetarResultado(){
-        setEstadoResultado("")
+    function contRespostas(){
+        const novoResposta = respondidos + 1 
+        setRespondidos(novoResposta)
+        console.log(novoResposta)
     }
-
-    function liberarBotoes() {
-        const estado = !liberarResposta
-        setLiberarResposta(estado)
-    }
-
-
     return (
         <ScreenContainer>
             <Hearder />
-            <DeckCards 
-                cores={cores} 
-                perguntas={perguntas} 
-                resultado={estadoResultado}
-                liberarResposta={liberarResposta}
-                liberarBotoes={liberarBotoes}
-                resetarResultado={resetarResultado}
-                />
-            <Footer
+            <DeckCards
                 cores={cores}
-                qtdPerguntas={perguntas.length}
-                botaoClicado={botaoClicado}
-                liberarResposta={liberarResposta}
+                perguntas={perguntas}
+                contRespostas={contRespostas}
             />
+            <Footer 
+                qtdPerguntas={perguntas.length}
+                respondidos={respondidos}
+            />
+
         </ScreenContainer>
     )
 }

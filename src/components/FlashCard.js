@@ -3,115 +3,79 @@ import setinha from "../assets/img/setinha.png"
 import { useState } from "react";
 
 
-export default function ({ cores, perguntas, estadoCarta, bloquearCartas, liberarCartas, resultado, liberarResposta, liberarBotoes, resetarResultado }) {
+export default function ({ 
+    cores,
+    perguntas,
+    contRespostas
+    }) {
+        const [{ AMARELO, CINZA, VERDE, VERMELHO }] = cores
+        const [posicaoCard, setPosicaoCard] = useState("fechado")
 
-    const [{ AMARELO, CINZA, VERDE, VERMELHO }] = cores
-    const [posicaoCard, setPosicaoCard] = useState(perguntas.posicaoCard)
-    const [cardFinalizado, setCardFinalizado] = useState(perguntas.resultado)
-    // const [liberarResposta, setLiberarResposta] = useState(false)
+            function botaoClicado(opcao) {
+                const novoResultado = opcao
+                setPosicaoCard (opcao)
+                contRespostas()
+            } 
 
-    function finalizarCard() {
-        const novoResultado = resultado
-        setCardFinalizado(novoResultado)
-    }
-
-    function mudarExibicaoCard(posicaoAtual) {
-        let novaPosicao = ""
-        let novoEstado
-        switch (posicaoAtual) {
-            case "fechado":
-                novaPosicao = "textoPergunta"
-                bloquearCartas()
-                break;
-            case "textoPergunta":
-                novaPosicao = "respostaPergunta"
-                liberarBotoes()
-                break;
-            case "respostaPergunta":
-                novaPosicao = "respondido"
-                liberarCartas()
-                finalizarCard()
-                liberarBotoes()
-                resetarResultado()
-                break;
-        }
-
-        perguntas.posicaoCard = novaPosicao
-        estadoCarta = novoEstado
-        setPosicaoCard(novaPosicao)
-    }
-
-    return (
+        return(
         <>
-            {perguntas.posicaoCard === "fechado" && (
-                <PerguntaFechada linha={"none"} cor={"#333333"} onClick={() => { estadoCarta && (mudarExibicaoCard(posicaoCard)) }}>
+            {posicaoCard==="fechado" &&(
+                <PerguntaFechada linha={"none"} cor={"#333333"} onClick={() => setPosicaoCard("textoPergunta")}>
                     <p>Pergunta {perguntas.id}</p>
                     <ion-icon name="play-outline"></ion-icon>
-
                 </PerguntaFechada>
             )}
 
-            {perguntas.posicaoCard === "textoPergunta" && (
+            {posicaoCard === "textoPergunta" && (
                 <PerguntaAberta  >
                     <div>
                         {perguntas.pergunta}
-                        <img onClick={() => mudarExibicaoCard(perguntas.posicaoCard)} src={setinha} alt="setinha" />
+                        <img onClick={() => setPosicaoCard("respostaPergunta")} src={setinha} alt="setinha" />
                     </div>
                 </PerguntaAberta>
             )}
-            {perguntas.posicaoCard === "respostaPergunta" && (
-                <>
-                    {resultado !== "" && (
-                        <PerguntaAberta onClick={() => mudarExibicaoCard(perguntas.posicaoCard)}>
+
+            {posicaoCard === "respostaPergunta" && 
+                    <PerguntaAberta>
                             <div>
                                 {perguntas.resposta}
                             </div>
+                            <ContainerBotoes>
+                                <Botao onClick={() => botaoClicado("naoLembrei")} cor={VERMELHO}>
+                                    Não Lembrei
+                                </Botao>
+                                <Botao onClick={() => botaoClicado("quase")} cor={AMARELO}>
+                                    Quase não lembrei
+                                </Botao>
+                                <Botao onClick={() => botaoClicado("zap")} cor={VERDE}>
+                                    Zap!
+                                </Botao>
+                            </ContainerBotoes>
                         </PerguntaAberta>
+            }
 
-                    )}
-
-                    {resultado === "" && (
-                        <PerguntaAberta>
-                            <div>
-                                {perguntas.resposta}
-                            </div>
-                        </PerguntaAberta>
-
-                    )}
-                </>
-
-
+            {posicaoCard==="naoLembrei" &&(
+                <PerguntaFechada linha={"line-through"} cor={VERMELHO}>
+                    <p>Pergunta {perguntas.id}</p>
+                    < ion-icon name="close-circle" />
+                </PerguntaFechada>
+            )}
+           
+            {posicaoCard==="quase" &&(
+                <PerguntaFechada linha={"line-through"} cor={AMARELO}>
+                    <p>Pergunta {perguntas.id}</p>
+                    < ion-icon name="help-circle" />
+                </PerguntaFechada>
             )}
 
-            {perguntas.posicaoCard === "respondido" && (
-                <>
-                    {cardFinalizado === "naoLembrei" && (
-                        <PerguntaFechada linha={"line-through"} cor={VERMELHO}>
-                            <p>Pergunta {perguntas.id}</p>
-                            <ion-icon name="close-circle"></ion-icon>
-                        </PerguntaFechada>
-
-                    )}
-                    {cardFinalizado === "quase" && (
-                        <PerguntaFechada linha={"line-through"} cor={AMARELO}>
-                            <p>Pergunta {perguntas.id}</p>
-                            <ion-icon name="help-circle"></ion-icon>
-                        </PerguntaFechada>
-
-                    )}
-                    {cardFinalizado === "zap" && (
-                        <PerguntaFechada linha={"line-through"} cor={VERDE}>
-                            <p>Pergunta {perguntas.id}</p>
-                            <ion-icon name="checkmark-circle"></ion-icon>
-                        </PerguntaFechada>
-
-                    )}
-                </>
-
+            {posicaoCard==="zap" &&(
+                <PerguntaFechada linha={"line-through"} cor={VERDE}>
+                    <p>Pergunta {perguntas.id}</p>
+                    < ion-icon name="checkmark-circle" />
+                </PerguntaFechada>
             )}
-
         </>
-    )
+        )
 }
 
 const PerguntaFechada = styled.div`
@@ -121,61 +85,85 @@ const PerguntaFechada = styled.div`
     margin: 12px;
     padding: 15px;
     box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.15);
-    border-radius: 5px;
+    border-radius: 5px;     
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between;     
     cursor: pointer;
-
+    
     p {
         font-family: 'Recursive';
         font-style: normal;
         font-weight: 700;
-        font-size: 16px;
-        line-height: 19px;
-        color: ${props => props.cor};
-        text-decoration-line: ${props => props.linha};
-      }
-
-    ion-icon{
-        color: ${props => props.cor};
-        height: 30px;
+        font-size: 16px;         
+        line-height: 19px;         
+        color: ${props => props.cor};         
+        text-decoration-line: ${props => props.linha};       
     }
 
-    img{
-        width: 30px;
-        color: red;
-    }
+     ion-icon{
+        color: ${props => props.cor};
+         height: 30px;
+     }
 
-   
-`
+     img{
+         width: 30px;
+         color: red;
+     }
+
+ `
 
 const PerguntaAberta = styled.div`
-    width: 300px;
-    margin: 12px;
-    padding: 15px;
-    min-height: 100px;
+     width: 300px;
+     margin: 12px;
+     padding: 15px;
+     min-height: 100px;
     background: #FFFFD5;
-    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.15);
-    border-radius: 5px;
+     box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.15);
+     border-radius: 5px;
+     font-family: 'Recursive';
+     font-style: normal;
+     font-weight: 400;
+     font-size: 18px;
+     line-height: 22px;
+     color: #333333;
+     position: relative;
+     display: flex;
+     flex-direction: column;
+     justify-content: space-between;
+    
+     img{
+         position: absolute;
+         bottom: 10px;
+         right: 10px;
+     }
+
+     img:hover{
+         cursor: pointer;
+     }
+   `
+
+const ContainerBotoes = styled.div`
+    display: flex;
+    width: 80%;
+    justify-content: space-between;
+    margin: 20px;
+
+`
+const Botao = styled.button`
+    width: 90px;
     font-family: 'Recursive';
     font-style: normal;
     font-weight: 400;
-    font-size: 18px;
-    line-height: 22px;
-    color: #333333;
-    position: relative;
+    font-size: 12px;
+    line-height: 14px;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    
-    img{
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-    }
-
-    img:hover{
-        cursor: pointer;
-    }
-  `
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #FFFFFF;
+    background: ${props => props.cor};
+    border-radius: 5px;
+    border: 1px solid ${props => props.cor};
+    padding:5px;
+`
