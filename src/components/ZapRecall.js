@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 import DeckCards from "./DeckCards";
 import Footer from "./Footer";
@@ -6,12 +7,19 @@ import Hearder from "./Header";
 
 export default function ZapRecall({ perguntas, cores }) {
 
+    const [estadoResultado, setEstadoResultado] = useState("")
+    let novoResultado =""
+
+    function botaoClicado(opcao){
+        novoResultado = opcao
+        setEstadoResultado(novoResultado)
+    }
 
     return (
         <ScreenContainer>
             <Hearder />
-            <DeckCards perguntas={perguntas}/>
-            <Footer cores={cores} qtdPerguntas={perguntas.length} />
+            <DeckCards  cores={cores} perguntas={perguntas} resultado={estadoResultado}/>
+            <Footer cores={cores} qtdPerguntas={perguntas.length} botaoClicado={botaoClicado}/>
         </ScreenContainer>
     )
 }

@@ -1,24 +1,23 @@
 import styled from "styled-components";
 
-export default function Footer({cores}){
-
+export default function Footer({cores, qtdPerguntas, botaoClicado}){
     const [{AMARELO, CINZA, VERDE, VERMELHO}] = cores
-
+    
     return(
         <FooterConcluidos>
             <ContainerBotoes>
-                <Botao cor={VERMELHO}>
+                <Botao onClick={() => botaoClicado("naoLembrei")} cor={VERMELHO}>
                     Não Lembrei
                 </Botao>
-                <Botao cor={AMARELO}>
+                <Botao onClick={() => botaoClicado("quase")} cor={AMARELO}>
                     Quase não lembrei
                 </Botao>
-                <Botao cor={VERDE}>
+                <Botao onClick={() => botaoClicado("zap")} cor={VERDE}>
                     Zap!
                 </Botao>
             </ContainerBotoes>
             <div>
-                0/8 Concluidos
+                0/{qtdPerguntas} Concluidos
             </div>
         </FooterConcluidos>
     )

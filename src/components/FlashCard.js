@@ -3,12 +3,18 @@ import setinha from "../assets/img/setinha.png"
 import { useState } from "react";
 
 
-export default function ({ perguntas, estadoCarta, bloquearCartas, liberarCartas}) {
-
+export default function ({ cores, perguntas, estadoCarta, bloquearCartas, liberarCartas, resultado }) {
+    const [{AMARELO, CINZA, VERDE, VERMELHO}] = cores
 
     const [posicaoCard, setPosicaoCard] = useState(perguntas.posicaoCard)
+    const [cardFinalizado, setCardFinalizado] = useState(perguntas.resultado)
 
-    function mudarExibicao(posicaoAtual) {
+    function finalizarCard(){
+        const novoResultado = resultado
+        setCardFinalizado(novoResultado)
+    }
+    
+    function mudarExibicaoCard(posicaoAtual) {
         let novaPosicao = ""
         let novoEstado
         switch (posicaoAtual) {
@@ -18,11 +24,12 @@ export default function ({ perguntas, estadoCarta, bloquearCartas, liberarCartas
                 break;
             case "textoPergunta":
                 novaPosicao = "respostaPergunta"
-                
+
                 break;
             case "respostaPergunta":
                 novaPosicao = "respondido"
                 liberarCartas()
+                finalizarCard() 
                 break;
         }
         perguntas.posicaoCard = novaPosicao
@@ -33,36 +40,54 @@ export default function ({ perguntas, estadoCarta, bloquearCartas, liberarCartas
     return (
         <>
             {perguntas.posicaoCard === "fechado" && (
-                <PerguntaFechada cor={"#333333"} onClick={() => {estadoCarta && (mudarExibicao(perguntas.posicaoCard))}}>
+                <PerguntaFechada cor={"#333333"} onClick={() => { estadoCarta && (mudarExibicaoCard(posicaoCard)) }}>
                     <p>Pergunta {perguntas.id}</p>
                     <ion-icon name="play-outline"></ion-icon>
 
                 </PerguntaFechada>
             )}
 
-            
+
             {perguntas.posicaoCard === "textoPergunta" && (
-                <PerguntaAberta  onClick={() => mudarExibicao(perguntas.posicaoCard)}>
+                <PerguntaAberta  >
                     <div>
                         {perguntas.pergunta}
-                        <img src={setinha} />
+                        <img onClick={() => mudarExibicaoCard(perguntas.posicaoCard)} src={setinha} alt="setinha" />
                     </div>
                 </PerguntaAberta>
             )}
             {perguntas.posicaoCard === "respostaPergunta" && (
-                <PerguntaAberta onClick={() => mudarExibicao(perguntas.posicaoCard)}>
+                <PerguntaAberta onClick={() => mudarExibicaoCard(perguntas.posicaoCard)}>
                     <div>
                         {perguntas.resposta}
                     </div>
                 </PerguntaAberta>
             )}
             {perguntas.posicaoCard === "respondido" && (
-                <PerguntaFechada cor={"red"}>
-                    <p>Pergunta {perguntas.id}</p>
-                    <ion-icon name="close-circle"></ion-icon>
-                   
+                <>
+                    {cardFinalizado === "naoLembrei" && (
+                        <PerguntaFechada cor={VERMELHO}>
+                            <p>Pergunta {perguntas.id}</p>
+                            <ion-icon name="close-circle"></ion-icon>
+                        </PerguntaFechada>
 
-                </PerguntaFechada>
+                    )}
+                       {cardFinalizado === "quase" && (
+                        <PerguntaFechada cor={AMARELO}>
+                            <p>Pergunta {perguntas.id}</p>
+                            <ion-icon name="close-circle"></ion-icon>
+                        </PerguntaFechada>
+
+                    )}
+                    {cardFinalizado === "zap" && (
+                        <PerguntaFechada cor={VERDE}>
+                            <p>Pergunta {perguntas.id}</p>
+                            <ion-icon name="close-circle"></ion-icon>
+                        </PerguntaFechada>
+
+                    )}
+                </>
+
             )}
 
         </>
@@ -81,6 +106,7 @@ const PerguntaFechada = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    cursor: pointer;
 
     p {
         font-family: 'Recursive';
@@ -88,19 +114,20 @@ const PerguntaFechada = styled.div`
         font-weight: 700;
         font-size: 16px;
         line-height: 19px;
-        color: ${props=>props.cor};
+        color: ${props => props.cor};
       }
 
     ion-icon{
-        color: red;
+        color: black;
     }
 
     img{
         width: 30px;
         color: red;
     }
-`
 
+   
+`
 
 const PerguntaAberta = styled.div`
     width: 300px;
@@ -125,5 +152,9 @@ const PerguntaAberta = styled.div`
         position: absolute;
         bottom: 10px;
         right: 10px;
-  }
+    }
+
+    img:hover{
+        cursor: pointer;
+    }
   `

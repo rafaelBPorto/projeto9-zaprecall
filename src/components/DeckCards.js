@@ -1,9 +1,9 @@
 import FlashCard from "./FlashCard";
 import { useState } from "react";
 
-export default function DeckCards({ perguntas }) {
-    let cartaFechada = true
+export default function DeckCards({ cores, perguntas, resultado }) {
     const [estadoCarta, setEstadoCarta] = useState(true)
+    console.log("este é o resultado " + resultado)
 
     function bloquearCartas(){
         const novoEstado = false
@@ -18,11 +18,13 @@ export default function DeckCards({ perguntas }) {
     return (
         <div>
             {perguntas.map((p) => <FlashCard
+                cores={cores}
                 key={p.id}
                 perguntas={p}
                 estadoCarta={estadoCarta}
                 bloquearCartas={bloquearCartas}
                 liberarCartas={liberarCartas}
+                resultado={resultado}
             />)}
         </div>
     )
