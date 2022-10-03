@@ -3,17 +3,18 @@ import setinha from "../assets/img/setinha.png"
 import { useState } from "react";
 
 
-export default function ({ cores, perguntas, estadoCarta, bloquearCartas, liberarCartas, resultado }) {
-    const [{AMARELO, CINZA, VERDE, VERMELHO}] = cores
+export default function ({ cores, perguntas, estadoCarta, bloquearCartas, liberarCartas, resultado, liberarResposta, liberarBotoes, resetarResultado }) {
 
+    const [{ AMARELO, CINZA, VERDE, VERMELHO }] = cores
     const [posicaoCard, setPosicaoCard] = useState(perguntas.posicaoCard)
     const [cardFinalizado, setCardFinalizado] = useState(perguntas.resultado)
+    // const [liberarResposta, setLiberarResposta] = useState(false)
 
-    function finalizarCard(){
+    function finalizarCard() {
         const novoResultado = resultado
         setCardFinalizado(novoResultado)
     }
-    
+
     function mudarExibicaoCard(posicaoAtual) {
         let novaPosicao = ""
         let novoEstado
@@ -24,14 +25,17 @@ export default function ({ cores, perguntas, estadoCarta, bloquearCartas, libera
                 break;
             case "textoPergunta":
                 novaPosicao = "respostaPergunta"
-
+                liberarBotoes()
                 break;
             case "respostaPergunta":
                 novaPosicao = "respondido"
                 liberarCartas()
-                finalizarCard() 
+                finalizarCard()
+                liberarBotoes()
+                resetarResultado()
                 break;
         }
+
         perguntas.posicaoCard = novaPosicao
         estadoCarta = novoEstado
         setPosicaoCard(novaPosicao)
@@ -40,13 +44,12 @@ export default function ({ cores, perguntas, estadoCarta, bloquearCartas, libera
     return (
         <>
             {perguntas.posicaoCard === "fechado" && (
-                <PerguntaFechada cor={"#333333"} onClick={() => { estadoCarta && (mudarExibicaoCard(posicaoCard)) }}>
+                <PerguntaFechada linha={"none"} cor={"#333333"} onClick={() => { estadoCarta && (mudarExibicaoCard(posicaoCard)) }}>
                     <p>Pergunta {perguntas.id}</p>
                     <ion-icon name="play-outline"></ion-icon>
 
                 </PerguntaFechada>
             )}
-
 
             {perguntas.posicaoCard === "textoPergunta" && (
                 <PerguntaAberta  >
@@ -57,32 +60,49 @@ export default function ({ cores, perguntas, estadoCarta, bloquearCartas, libera
                 </PerguntaAberta>
             )}
             {perguntas.posicaoCard === "respostaPergunta" && (
-                <PerguntaAberta onClick={() => mudarExibicaoCard(perguntas.posicaoCard)}>
-                    <div>
-                        {perguntas.resposta}
-                    </div>
-                </PerguntaAberta>
+                <>
+                    {resultado !== "" && (
+                        <PerguntaAberta onClick={() => mudarExibicaoCard(perguntas.posicaoCard)}>
+                            <div>
+                                {perguntas.resposta}
+                            </div>
+                        </PerguntaAberta>
+
+                    )}
+
+                    {resultado === "" && (
+                        <PerguntaAberta>
+                            <div>
+                                {perguntas.resposta}
+                            </div>
+                        </PerguntaAberta>
+
+                    )}
+                </>
+
+
             )}
+
             {perguntas.posicaoCard === "respondido" && (
                 <>
                     {cardFinalizado === "naoLembrei" && (
-                        <PerguntaFechada cor={VERMELHO}>
+                        <PerguntaFechada linha={"line-through"} cor={VERMELHO}>
                             <p>Pergunta {perguntas.id}</p>
                             <ion-icon name="close-circle"></ion-icon>
                         </PerguntaFechada>
 
                     )}
-                       {cardFinalizado === "quase" && (
-                        <PerguntaFechada cor={AMARELO}>
+                    {cardFinalizado === "quase" && (
+                        <PerguntaFechada linha={"line-through"} cor={AMARELO}>
                             <p>Pergunta {perguntas.id}</p>
-                            <ion-icon name="close-circle"></ion-icon>
+                            <ion-icon name="help-circle"></ion-icon>
                         </PerguntaFechada>
 
                     )}
                     {cardFinalizado === "zap" && (
-                        <PerguntaFechada cor={VERDE}>
+                        <PerguntaFechada linha={"line-through"} cor={VERDE}>
                             <p>Pergunta {perguntas.id}</p>
-                            <ion-icon name="close-circle"></ion-icon>
+                            <ion-icon name="checkmark-circle"></ion-icon>
                         </PerguntaFechada>
 
                     )}
@@ -93,7 +113,6 @@ export default function ({ cores, perguntas, estadoCarta, bloquearCartas, libera
         </>
     )
 }
-
 
 const PerguntaFechada = styled.div`
     width: 300px;
@@ -115,10 +134,12 @@ const PerguntaFechada = styled.div`
         font-size: 16px;
         line-height: 19px;
         color: ${props => props.cor};
+        text-decoration-line: ${props => props.linha};
       }
 
     ion-icon{
-        color: black;
+        color: ${props => props.cor};
+        height: 30px;
     }
 
     img{

@@ -1,20 +1,41 @@
+import { useState } from "react";
 import styled from "styled-components";
 
-export default function Footer({cores, qtdPerguntas, botaoClicado}){
-    const [{AMARELO, CINZA, VERDE, VERMELHO}] = cores
-    
-    return(
+export default function Footer({ cores, qtdPerguntas, botaoClicado, liberarResposta }) {
+    const [{ AMARELO, CINZA, VERDE, VERMELHO }] = cores
+
+
+
+
+    return (
         <FooterConcluidos>
             <ContainerBotoes>
-                <Botao onClick={() => botaoClicado("naoLembrei")} cor={VERMELHO}>
-                    Não Lembrei
-                </Botao>
-                <Botao onClick={() => botaoClicado("quase")} cor={AMARELO}>
-                    Quase não lembrei
-                </Botao>
-                <Botao onClick={() => botaoClicado("zap")} cor={VERDE}>
-                    Zap!
-                </Botao>
+                {liberarResposta ?
+                    <>
+                        <Botao onClick={() => botaoClicado("naoLembrei")} cor={VERMELHO}>
+                            Não Lembrei
+                        </Botao>
+                        <Botao onClick={() => botaoClicado("quase")} cor={AMARELO}>
+                            Quase não lembrei
+                        </Botao>
+                        <Botao onClick={() => botaoClicado("zap")} cor={VERDE}>
+                            Zap!
+                        </Botao>
+                    </>
+                    :
+                    <>
+                        <Botao cor={VERMELHO}>
+                            Não Lembrei
+                        </Botao>
+                        <Botao cor={AMARELO}>
+                            Quase não lembrei
+                        </Botao>
+                        <Botao cor={VERDE}>
+                            Zap!
+                        </Botao>
+                    </>
+                }
+
             </ContainerBotoes>
             <div>
                 0/{qtdPerguntas} Concluidos
@@ -24,7 +45,7 @@ export default function Footer({cores, qtdPerguntas, botaoClicado}){
 }
 
 
-const FooterConcluidos = styled.div `
+const FooterConcluidos = styled.div`
     width: 100%;
     min-height: 50px;
     background-color: #FFFFFF;
@@ -43,7 +64,7 @@ const FooterConcluidos = styled.div `
  
   `
 
-const ContainerBotoes = styled.div `
+const ContainerBotoes = styled.div`
     display: flex;
     width: 80%;
     justify-content: space-between;
@@ -51,7 +72,7 @@ const ContainerBotoes = styled.div `
 
 `
 
-const Botao =styled.button`
+const Botao = styled.button`
     width: 90px;
     font-family: 'Recursive';
     font-style: normal;
@@ -68,11 +89,11 @@ const Botao =styled.button`
     border: 1px solid ${props => props.cor};
     padding:5px;
 `
-  
-  /* Você vai precisar trocar a cor dos botões e alguns textos!
-    VERDE = "#2FBE34"
-    AMARELO = "#FF922E"
-    VERMELHO = "#FF3030"
-    CINZA = "#333333" 
-  */
-  
+
+/* Você vai precisar trocar a cor dos botões e alguns textos!
+  VERDE = "#2FBE34"
+  AMARELO = "#FF922E"
+  VERMELHO = "#FF3030"
+  CINZA = "#333333" 
+*/
+
